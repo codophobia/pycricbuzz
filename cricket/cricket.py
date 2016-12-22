@@ -1,0 +1,123 @@
+import requests
+import json
+import sys
+from bs4 import BeautifulSoup
+from collections import OrderedDict
+
+url = "http://synd.cricbuzz.com/j2me/1.0/livematches.xml"
+def getxml(url):
+	try:
+		r = requests.get(url)
+	except requests.exceptions.RequestException as e: 
+		print e
+		sys.exit(1)
+	soup = BeautifulSoup(r.text,"html.parser")
+	return soup
+def matchinfo(match):
+	d = OrderedDict()
+	d['id'] = match['id']
+	d['srs'] = match['srs']
+	d['mchdesc'] = match['mchdesc']
+	d['mnum'] = match['mnum']
+	d['type'] = match['type']
+	d['status'] = match.state['status']
+	d['mchstate'] = match.state['mchstate']
+	return d
+
+def matches():
+	xml = getxml(url)
+	matches = xml.find_all('match')
+	info = []
+	for match in matches:
+		info.append(matchinfo(match))
+	data = json.dumps(info)
+	return data 
+
+def brief_scores(mid):
+	xml = getxml(url)
+	match = xml.find(id = mid)
+	if match is None:
+		return "Invalid match id"
+	if match.state['mchstate'] == 'nextlive':
+		return "match not started yet"
+	curl = match['datapath'] + "commentary.xml"
+	comm = getxml(curl)
+	mscr = comm.find('mscr')
+	batting = mscr.find('bttm')
+	bowling = mscr.find('blgtm')
+	data = OrderedDict()
+	d = OrderedDict()
+	data['matchinfo'] = matchinfo(match)
+	d['team'] = batting['sname']
+	d['score'] = []
+	binngs = batting.find_all('inngs')
+	for inng in binngs:
+		d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
+	data['batting'] = d
+	d.clear()
+	d['team'] = bowling['sname']
+	d['score'] = []
+	bwinngs = bowling.find_all('inngs')
+	for inng in bwinngs:
+		d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
+	data['bowling'] = d
+	data = json.dumps(data)
+	return data
+
+def commentary(mid):
+	xml = getxml(url)
+	match = xml.find(id = mid)
+	if match is None:
+		return "Invalid match id"
+	if match.state['mchstate'] == 'nextlive':
+		return "match not started yet"
+	curl = match['datapath'] + "commentary.xml"
+	comm = getxml(curl).find_all('c')
+	d = []
+	for c in comm:
+		d.append(c.text)
+	data = OrderedDict()
+	data['matchinfo'] = matchinfo(match)
+	data['commentary'] = d
+	data = json.dumps(data)
+	return data 
+
+def scorecard(mid):
+	xml = getxml(url)
+	match = xml.find(id = mid)
+	if match is None:
+		return "Invalid match id"
+	if match.state['mchstate'] == 'nextlive':
+		return "match not started yet"
+	surl = match['datapath'] + "scorecard.xml"
+	scard = getxml(surl)
+	scrs = scard.find('scrs')
+	innings = scrs.find_all('inngs')
+	data = OrderedDict()
+	data['matchinfo'] = matchinfo(match)
+	d = []
+	card = OrderedDict()
+	for inng in innings:
+		bat = inng.find('bttm')
+		card['batteam'] = bat['sname']
+		card['runs'] = inng['r']
+		card['wickets'] = inng['wkts']
+		card['overs'] = inng['noofovers']
+		card['runrate'] = bat['rr']
+		batplayers = bat.find_all('plyr')
+		batsman = []
+		bowlers = []
+		for player in batplayers:
+			status = player.find('status').text
+			batsman.append(OrderedDict([('name',player['sname']), ('runs', player['r']),('balls',player['b']),('fours',player['frs']),('six',player['six']),('dismissal',status)]))
+		card['batcard'] = batsman
+		bowl = inng.find('bltm')
+		card['bowlteam'] = bowl['sname']
+		bowlplayers = bowl.find_all('plyr')
+		for player in bowlplayers:
+			bowlers.append(OrderedDict([('name',player['sname']),('overs',player['ovrs']),('maidens',player['mdns']),('runs',player['roff']),('wickets',player['wkts'])]))
+		card['bowlcard'] = bowlers
+		d.append(card)
+	data['scorecard'] = d
+	data = json.dumps(data)
+	return data
