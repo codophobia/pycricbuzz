@@ -38,7 +38,7 @@ class Cricbuzz():
 		data = json.dumps(info)
 		return data 
 
-	def brief_scores(self,mid):
+	def livescore(self,mid):
 		xml = self.getxml(self.url)
 		match = xml.find(id = mid)
 		if match is None:
@@ -50,18 +50,26 @@ class Cricbuzz():
 		mscr = comm.find('mscr')
 		batting = mscr.find('bttm')
 		bowling = mscr.find('blgtm')
+		batsman = mscr.find_all('btsmn')
+		bowler= mscr.find_all('blrs')
 		data = OrderedDict()
 		d = OrderedDict()
 		data['matchinfo'] = self.matchinfo(match)
 		d['team'] = batting['sname']
 		d['score'] = []
+		d['batsman'] = []
+		for player in batsman:
+			d['batsman'].append(OrderedDict([('name',player['sname']), ('runs', player['r']),('balls',player['b']),('fours',player['frs']),('six',player['sxs'])]))
 		binngs = batting.find_all('inngs')
 		for inng in binngs:
 			d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
 		data['batting'] = d
-		d.clear()
+		d = OrderedDict()
 		d['team'] = bowling['sname']
 		d['score'] = []
+		d['bowler'] = []
+		for player in bowler:
+			d['bowler'].append(OrderedDict([('name',player['sname']),('overs',player['ovrs']),('maidens',player['mdns']),('runs',player['r']),('wickets',player['wkts'])]))
 		bwinngs = bowling.find_all('inngs')
 		for inng in bwinngs:
 			d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
