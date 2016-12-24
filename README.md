@@ -29,7 +29,7 @@ c = Cricbuzz()
 print c.matches()
 ```
 
-The output is a json response containing all the matches. Each match will have an attribute 'id'. Use this 'id' to get scorecard, brief score and commentary of matches.
+Each match will have an attribute 'id'. Use this 'id' to get scorecard, brief score and commentary of matches.
 
 <b>Get brief score of a match</b>
 
@@ -49,4 +49,3 @@ print c.scorecard(match['id'])
 print c.commentary(match['id'])
 ```
 
-<b>Note</b>: All the responses will be in json format. Analyse the json response correctly. 
