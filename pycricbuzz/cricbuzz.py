@@ -2,7 +2,6 @@ import requests
 import json
 import sys
 from bs4 import BeautifulSoup
-from collections import OrderedDict
 
 class Cricbuzz():
 	url = "http://synd.cricbuzz.com/j2me/1.0/livematches.xml"
@@ -19,7 +18,7 @@ class Cricbuzz():
 		return soup
 
 	def matchinfo(self,match):
-		d = OrderedDict()
+		d = {}
 		d['id'] = match['id']
 		d['srs'] = match['srs']
 		d['mchdesc'] = match['mchdesc']
@@ -33,10 +32,10 @@ class Cricbuzz():
 		xml = self.getxml(self.url)
 		matches = xml.find_all('match')
 		info = []
+		
 		for match in matches:
 			info.append(self.matchinfo(match))
-		data = json.dumps(info)
-		return data 
+		return info
 
 	def livescore(self,mid):
 		xml = self.getxml(self.url)
@@ -52,29 +51,28 @@ class Cricbuzz():
 		bowling = mscr.find('blgtm')
 		batsman = mscr.find_all('btsmn')
 		bowler= mscr.find_all('blrs')
-		data = OrderedDict()
-		d = OrderedDict()
+		data = {}
+		d = {}
 		data['matchinfo'] = self.matchinfo(match)
 		d['team'] = batting['sname']
 		d['score'] = []
 		d['batsman'] = []
 		for player in batsman:
-			d['batsman'].append(OrderedDict([('name',player['sname']), ('runs', player['r']),('balls',player['b']),('fours',player['frs']),('six',player['sxs'])]))
+			d['batsman'].append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['sxs']})
 		binngs = batting.find_all('inngs')
 		for inng in binngs:
-			d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
+			d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
 		data['batting'] = d
-		d = OrderedDict()
+		d = {}
 		d['team'] = bowling['sname']
 		d['score'] = []
 		d['bowler'] = []
 		for player in bowler:
-			d['bowler'].append(OrderedDict([('name',player['sname']),('overs',player['ovrs']),('maidens',player['mdns']),('runs',player['r']),('wickets',player['wkts'])]))
+			d['bowler'].append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['r'],'wickets':player['wkts']})
 		bwinngs = bowling.find_all('inngs')
 		for inng in bwinngs:
-			d['score'].append(OrderedDict([('desc',inng['desc']), ('runs', inng['r']),('wickets',inng['wkts']),('overs',inng['ovrs'])]))
+			d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
 		data['bowling'] = d
-		data = json.dumps(data)
 		return data
 
 	def commentary(self,mid):
@@ -89,10 +87,9 @@ class Cricbuzz():
 		d = []
 		for c in comm:
 			d.append(c.text)
-		data = OrderedDict()
+		data = {}
 		data['matchinfo'] = self.matchinfo(match)
 		data['commentary'] = d
-		data = json.dumps(data)
 		return data 
 
 	def scorecard(self,mid):
@@ -106,10 +103,10 @@ class Cricbuzz():
 		scard = self.getxml(surl)
 		scrs = scard.find('scrs')
 		innings = scrs.find_all('inngs')
-		data = OrderedDict()
+		data = {}
 		data['matchinfo'] = self.matchinfo(match)
 		d = []
-		card = OrderedDict()
+		card = {}
 		for inng in innings:
 			bat = inng.find('bttm')
 			card['batteam'] = bat['sname']
@@ -122,15 +119,14 @@ class Cricbuzz():
 			bowlers = []
 			for player in batplayers:
 				status = player.find('status').text
-				batsman.append(OrderedDict([('name',player['sname']), ('runs', player['r']),('balls',player['b']),('fours',player['frs']),('six',player['six']),('dismissal',status)]))
+				batsman.append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['six'],'dismissal':status})
 			card['batcard'] = batsman
 			bowl = inng.find('bltm')
 			card['bowlteam'] = bowl['sname']
 			bowlplayers = bowl.find_all('plyr')
 			for player in bowlplayers:
-				bowlers.append(OrderedDict([('name',player['sname']),('overs',player['ovrs']),('maidens',player['mdns']),('runs',player['roff']),('wickets',player['wkts'])]))
+				bowlers.append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['roff'],'wickets':player['wkts']})
 			card['bowlcard'] = bowlers
 			d.append(card)
 		data['scorecard'] = d
-		data = json.dumps(data)
 		return data
