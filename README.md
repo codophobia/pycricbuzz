@@ -4,7 +4,7 @@ A Pythonic interface to cricbuzz, with options to get live scores, live commenta
 <b>Instalation</b>
 
 <code>
-pip install cricbuzz
+pip install pycricbuzz
 </code>
 
 <b>Features</b>
@@ -16,10 +16,10 @@ pip install cricbuzz
 
 <b>Basic Usage</b>
 
-Import the cricbuzz library.
+Import the pycricbuzz library.
 
 ```python
-from cricbuzz import Cricbuzz
+from pycricbuzz import Cricbuzz
 c = Cricbuzz()
 ```
 
@@ -30,6 +30,12 @@ print c.matches()
 ```
 
 The output is a json response containing all the matches. Each match will have an attribute 'id'. Use this 'id' to get scorecard, brief score and commentary of matches.
+
+<b>Get brief score of a match</b>
+
+```python
+print c.livescore(match['id'])
+```
 
 <b>Get scorecard of a match</b>
 
