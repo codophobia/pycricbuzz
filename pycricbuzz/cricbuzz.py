@@ -114,6 +114,7 @@ class Cricbuzz():
 			card['wickets'] = inng['wkts']
 			card['overs'] = inng['noofovers']
 			card['runrate'] = bat['rr']
+			card['inngdesc'] = inng['desc']
 			batplayers = bat.find_all('plyr')
 			batsman = []
 			bowlers = []
@@ -127,6 +128,9 @@ class Cricbuzz():
 			for player in bowlplayers:
 				bowlers.append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['roff'],'wickets':player['wkts']})
 			card['bowlcard'] = bowlers
-			d.append(card)
+			d.append(card.copy())
 		data['scorecard'] = d
 		return data
+		
+
+
