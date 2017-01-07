@@ -105,6 +105,19 @@ class Cricbuzz():
 		innings = scrs.find_all('inngs')
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
+		squads = scard.find('squads')
+		teams = squads.find_all('team')
+		sq = []
+		sqd = {}
+
+		for team in teams:
+			sqd['team'] = team['name']
+			sqd['members'] = []
+			members = team['mem'].split(", ")
+			for mem in members:
+				sqd['members'].append(mem)
+			sq.append(sqd.copy())
+		data['squad'] = sq	
 		d = []
 		card = {}
 		for inng in innings:
