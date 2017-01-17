@@ -12,7 +12,7 @@ class Cricbuzz():
 		try:
 			r = requests.get(url)
 		except requests.exceptions.RequestException as e: 
-			print e
+			print (e)
 			sys.exit(1)
 		soup = BeautifulSoup(r.text,"html.parser")
 		return soup
