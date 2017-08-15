@@ -125,7 +125,7 @@ class Cricbuzz():
 			card['batteam'] = bat['sname']
 			card['runs'] = inng['r']
 			card['wickets'] = inng['wkts']
-			card['overs'] = inng['noofovers']
+			card['overs'] = inng['ovrs']
 			card['runrate'] = bat['rr']
 			card['inngdesc'] = inng['desc']
 			batplayers = bat.find_all('plyr')
