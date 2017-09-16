@@ -40,110 +40,110 @@ class Cricbuzz():
 	def livescore(self,mid):
 		xml = self.getxml(self.url)
 		match = xml.find(id = mid)
-		if match is None:
-			return "Invalid match id"
-		if match.state['mchstate'] == 'nextlive':
-			return "match not started yet"
-		curl = match['datapath'] + "commentary.xml"
-		comm = self.getxml(curl)
-		mscr = comm.find('mscr')
-		batting = mscr.find('bttm')
-		bowling = mscr.find('blgtm')
-		batsman = mscr.find_all('btsmn')
-		bowler= mscr.find_all('blrs')
 		data = {}
-		d = {}
 		data['matchinfo'] = self.matchinfo(match)
-		d['team'] = batting['sname']
-		d['score'] = []
-		d['batsman'] = []
-		for player in batsman:
-			d['batsman'].append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['sxs']})
-		binngs = batting.find_all('inngs')
-		for inng in binngs:
-			d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
-		data['batting'] = d
-		d = {}
-		d['team'] = bowling['sname']
-		d['score'] = []
-		d['bowler'] = []
-		for player in bowler:
-			d['bowler'].append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['r'],'wickets':player['wkts']})
-		bwinngs = bowling.find_all('inngs')
-		for inng in bwinngs:
-			d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
-		data['bowling'] = d
-		return data
+		tdata = data
+		try:
+			curl = match['datapath'] + "commentary.xml"
+			comm = self.getxml(curl)
+			mscr = comm.find('mscr')
+			batting = mscr.find('bttm')
+			bowling = mscr.find('blgtm')
+			batsman = mscr.find_all('btsmn')
+			bowler= mscr.find_all('blrs')
+			d = {}
+			d['team'] = batting['sname']
+			d['score'] = []
+			d['batsman'] = []
+			for player in batsman:
+				d['batsman'].append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['sxs']})
+			binngs = batting.find_all('inngs')
+			for inng in binngs:
+				d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
+			data['batting'] = d
+			d = {}
+			d['team'] = bowling['sname']
+			d['score'] = []
+			d['bowler'] = []
+			for player in bowler:
+				d['bowler'].append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['r'],'wickets':player['wkts']})
+			bwinngs = bowling.find_all('inngs')
+			for inng in bwinngs:
+				d['score'].append({'desc':inng['desc'], 'runs': inng['r'],'wickets':inng['wkts'],'overs':inng['ovrs']})
+			data['bowling'] = d
+			return data
+		except:
+			return tdata
 
 	def commentary(self,mid):
 		xml = self.getxml(self.url)
 		match = xml.find(id = mid)
-		if match is None:
-			return "Invalid match id"
-		if match.state['mchstate'] == 'nextlive':
-			return "match not started yet"
-		curl = match['datapath'] + "commentary.xml"
-		comm = self.getxml(curl).find_all('c')
-		d = []
-		for c in comm:
-			d.append(c.text)
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
-		data['commentary'] = d
-		return data 
+		tdata = data
+		try:
+			curl = match['datapath'] + "commentary.xml"
+			comm = self.getxml(curl).find_all('c')
+			d = []
+			for c in comm:
+				d.append(c.text)
+			data['commentary'] = d
+			return data 
+		except:
+			return tdata
 
 	def scorecard(self,mid):
 		xml = self.getxml(self.url)
 		match = xml.find(id = mid)
-		if match is None:
-			return "Invalid match id"
-		if match.state['mchstate'] == 'nextlive':
-			return "match not started yet"
-		surl = match['datapath'] + "scorecard.xml"
-		scard = self.getxml(surl)
-		scrs = scard.find('scrs')
-		innings = scrs.find_all('inngs')
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
-		squads = scard.find('squads')
-		teams = squads.find_all('team')
-		sq = []
-		sqd = {}
+		tdata = data
+		try:
+			surl = match['datapath'] + "scorecard.xml"
+			scard = self.getxml(surl)
+			scrs = scard.find('scrs')
+			innings = scrs.find_all('inngs')
+			squads = scard.find('squads')
+			teams = squads.find_all('team')
+			sq = []
+			sqd = {}
 
-		for team in teams:
-			sqd['team'] = team['name']
-			sqd['members'] = []
-			members = team['mem'].split(", ")
-			for mem in members:
-				sqd['members'].append(mem)
-			sq.append(sqd.copy())
-		data['squad'] = sq	
-		d = []
-		card = {}
-		for inng in innings:
-			bat = inng.find('bttm')
-			card['batteam'] = bat['sname']
-			card['runs'] = inng['r']
-			card['wickets'] = inng['wkts']
-			card['overs'] = inng['ovrs']
-			card['runrate'] = bat['rr']
-			card['inngdesc'] = inng['desc']
-			batplayers = bat.find_all('plyr')
-			batsman = []
-			bowlers = []
-			for player in batplayers:
-				status = player.find('status').text
-				batsman.append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['six'],'dismissal':status})
-			card['batcard'] = batsman
-			bowl = inng.find('bltm')
-			card['bowlteam'] = bowl['sname']
-			bowlplayers = bowl.find_all('plyr')
-			for player in bowlplayers:
-				bowlers.append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['roff'],'wickets':player['wkts']})
-			card['bowlcard'] = bowlers
-			d.append(card.copy())
-		data['scorecard'] = d
-		return data
+			for team in teams:
+				sqd['team'] = team['name']
+				sqd['members'] = []
+				members = team['mem'].split(", ")
+				for mem in members:
+					sqd['members'].append(mem)
+				sq.append(sqd.copy())
+			data['squad'] = sq	
+			d = []
+			card = {}
+			for inng in innings:
+				bat = inng.find('bttm')
+				card['batteam'] = bat['sname']
+				card['runs'] = inng['r']
+				card['wickets'] = inng['wkts']
+				card['overs'] = inng['ovrs']
+				card['runrate'] = bat['rr']
+				card['inngdesc'] = inng['desc']
+				batplayers = bat.find_all('plyr')
+				batsman = []
+				bowlers = []
+				for player in batplayers:
+					status = player.find('status').text
+					batsman.append({'name':player['sname'],'runs': player['r'],'balls':player['b'],'fours':player['frs'],'six':player['six'],'dismissal':status})
+				card['batcard'] = batsman
+				bowl = inng.find('bltm')
+				card['bowlteam'] = bowl['sname']
+				bowlplayers = bowl.find_all('plyr')
+				for player in bowlplayers:
+					bowlers.append({'name':player['sname'],'overs':player['ovrs'],'maidens':player['mdns'],'runs':player['roff'],'wickets':player['wkts']})
+				card['bowlcard'] = bowlers
+				d.append(card.copy())
+			data['scorecard'] = d
+			return data
+		except:
+			return tdata
 		
 
 
