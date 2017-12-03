@@ -1,7 +1,7 @@
 # <b>Cricbuzz for Python</b>
 A Pythonic interface to cricbuzz, with options to get live scores, live commentary and scorecards.
 
-You can find detailed explaination here: <a href = "http://shivammitra.com/cricbuzz-api-for-python/">pycricbuzz blog</a>
+You can find detailed explaination here: <a href = "https://cricstatshub.com/2017/12/03/cricket-api-for-python/">pycricbuzz blog</a>
 
 <b>Instalation</b>
 
