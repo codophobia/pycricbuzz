@@ -39,7 +39,7 @@ class Cricbuzz():
 
 	def livescore(self,mid):
 		xml = self.getxml(self.url)
-		match = xml.find(id = mid)
+                match = xml.find('match', {'id': mid})
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
 		tdata = data
@@ -77,7 +77,7 @@ class Cricbuzz():
 
 	def commentary(self,mid):
 		xml = self.getxml(self.url)
-		match = xml.find(id = mid)
+                match = xml.find('match', {'id': mid})
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
 		tdata = data
@@ -94,7 +94,7 @@ class Cricbuzz():
 
 	def scorecard(self,mid):
 		xml = self.getxml(self.url)
-		match = xml.find(id = mid)
+                match = xml.find('match', {'id': mid})
 		data = {}
 		data['matchinfo'] = self.matchinfo(match)
 		tdata = data
