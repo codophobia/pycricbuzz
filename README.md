@@ -31,7 +31,13 @@ c = Cricbuzz()
 print c.matches()
 ```
 
-Each match will have an attribute 'id'. Use this 'id' to get scorecard, brief score and commentary of matches.
+Each match will have an attribute 'id'. Use this 'id' to get matchinfo, scorecard, brief score and commentary of matches.
+
+<b>Get information about a match</b>
+
+```
+print c.matchinfo(match['id'])
+```
 
 <b>Get brief score of a match</b>
 
