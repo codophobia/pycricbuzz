@@ -1,7 +1,6 @@
 # <b>Cricbuzz for Python</b>
 A Pythonic interface to cricbuzz, with options to get live scores, live commentary and scorecards.
 
-You can find detailed explaination here: <a href = "https://cricstatshub.com/2017/12/03/cricket-api-for-python/">pycricbuzz blog</a>
 
 <b>Instalation</b>
 
@@ -10,11 +9,22 @@ pip install pycricbuzz
 </code>
 
 <b>Features</b>
-<ul>
-<li>Get upcoming, live and recently concluded matches</li>
-<li>Commentary for live matches</li>
-<li>Scorecard for live and past matches</li>
-</ul>
+
+* Get information upcoming, live and recently concluded matches
+  * series name
+  * match status
+  * venue
+  * toss
+  * match official
+  * squads
+* Get mini scorecards for live matches
+  * Batsman currently batting along with their scores,runs,fours,sixes etc.
+  * Bowlers currently bowling along with their wickets,overs,maidens etc.
+  * Summary of all the innings
+  * Last three overs events
+  * Current patnership and run rate
+* Commentary for live matches
+* Scorecard for live and past matches
 
 <b>Basic Usage</b>
 
