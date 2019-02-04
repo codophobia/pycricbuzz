@@ -143,7 +143,8 @@ class Cricbuzz():
 			comm = self.crawl_url(url).get('comm_lines')
 			d = []
 			for c in comm:
-				d.append({"comm":c.get("comm"),"over":c.get("o_no")})
+				if "comm" in c:
+					d.append({"comm":c.get("comm"),"over":c.get("o_no")})
 			data['commentary'] = d
 			return data 
 		except Exception:
@@ -198,4 +199,3 @@ class Cricbuzz():
 			return data
 		except Exception:
 			raise
-

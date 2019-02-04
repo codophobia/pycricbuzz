@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'pycricbuzz',
   packages = ['pycricbuzz'], 
-  version = '2.1',
+  version = '2.2',
   description = 'A library for fetching live cricket scores from cricbuzz',
   author = 'Shivam Mitra',
   author_email = 'shivamm389@gmail.com',
