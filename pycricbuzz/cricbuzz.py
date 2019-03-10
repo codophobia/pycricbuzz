@@ -79,7 +79,8 @@ class Cricbuzz():
 		return info
 
 	def find_match(self,id):
-		crawled_content = self.crawl_url(self.url)
+		url = "http://mapps.cricbuzz.com/cbzios/match/livematches"
+		crawled_content = self.crawl_url(url)
 		matches = crawled_content['matches']
 
 		for match in matches:
@@ -90,26 +91,25 @@ class Cricbuzz():
 	def livescore(self,mid):
 		data = {}
 		try:
-			url = "http://mapps.cricbuzz.com/cbzios/match/" + mid + "/leanback.json"
-			comm = self.crawl_url(url)
+			comm = self.find_match(mid)
 
-			if "over_summary" not in comm:
-				return data
 			batting = comm.get('bat_team')
+			if "batting" is None:
+				return data
 			bowling = comm.get('bow_team')
 			batsman = comm.get('batsman')
 			bowler = comm.get('bowler')
 
-			data["run_rate"] = comm.get("crr")
-			data["patnership"] = comm.get("prtshp")
-			data["prev_overs"] = comm.get("prev_overs")
+			team_map = {}
+			team_map[comm["team1"]["id"]] = comm["team1"]["name"]
+			team_map[comm["team2"]["id"]] = comm["team2"]["name"]
 
 			if batsman is None:
 				batsman = []
 			if bowler is None:
 				bowler = []
 			d = {}
-			d['team'] = batting.get('name')
+			d['team'] = team_map[batting.get('id')]
 			d['score'] = []
 			d['batsman'] = []
 			for player in batsman:
@@ -121,7 +121,7 @@ class Cricbuzz():
 				d['score'].append({'inning_num':inng['id'], 'runs': inng['score'],'wickets':inng['wkts'],'overs':inng['overs'],'declare':inng.get('decl')})
 			data['batting'] = d
 			d = {}
-			d['team'] = bowling['name']
+			d['team'] = team_map[bowling.get('id')]
 			d['score'] = []
 			d['bowler'] = []
 			for player in bowler:

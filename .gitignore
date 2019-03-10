@@ -12,5 +12,5 @@ doc/cdoc/build
 ./.shelf
 MANIFEST
 .cache
-
+*.pyc
 
