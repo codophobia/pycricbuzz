@@ -94,7 +94,7 @@ class Cricbuzz():
 			comm = self.find_match(mid)
 
 			batting = comm.get('bat_team')
-			if "batting" is None:
+			if batting is None:
 				return data
 			bowling = comm.get('bow_team')
 			batsman = comm.get('batsman')
@@ -139,7 +139,7 @@ class Cricbuzz():
 	def commentary(self,mid):
 		data = {}
 		try:
-			url = url = "http://mapps.cricbuzz.com/cbzios/match/" + mid + "/commentary"
+			url =  "http://mapps.cricbuzz.com/cbzios/match/" + mid + "/commentary"
 			comm = self.crawl_url(url).get('comm_lines')
 			d = []
 			for c in comm:
