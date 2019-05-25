@@ -9,7 +9,7 @@ class Cricbuzz():
 		try:
 			r = requests.get(url).json()
 			return r
-		except Exception: 
+		except Exception:
 			raise
 
 	def players_mapping(self,mid):
@@ -29,7 +29,7 @@ class Cricbuzz():
 		d['id'] = mid
 		url = "http://mapps.cricbuzz.com/cbzios/match/" + mid
 		match = self.crawl_url(url)
-		
+
 		d['srs'] = match.get('series_name')
 		d['mnum'] = match.get('header',).get('match_desc')
 		d['type'] = match.get('header').get('type')
@@ -73,7 +73,7 @@ class Cricbuzz():
 		crawled_content = self.crawl_url(url)
 		matches = crawled_content['matches']
 		info = []
-		
+
 		for match in matches:
 			info.append(self.matchinfo(match['match_id']))
 		return info
@@ -146,7 +146,7 @@ class Cricbuzz():
 				if "comm" in c:
 					d.append({"comm":c.get("comm"),"over":c.get("o_no")})
 			data['commentary'] = d
-			return data 
+			return data
 		except Exception:
 			raise
 
@@ -196,6 +196,20 @@ class Cricbuzz():
 				card["fall_wickets"] = fow
 				d.append(card.copy())
 			data['scorecard'] = d
+			return data
+		except Exception:
+			raise
+
+	def fullcommentary(self,mid):
+		data = {}
+		try:
+			url =  "https://www.cricbuzz.com/match-api/"+mid+"/commentary-full.json"
+			comm = self.crawl_url(url).get('comm_lines')
+			d = []
+			for c in comm:
+				if "comm" in c:
+					d.append({"comm":c.get("comm"),"over":c.get("o_no")})
+			data['fullcommentary'] = d
 			return data
 		except Exception:
 			raise
