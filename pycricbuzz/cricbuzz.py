@@ -213,3 +213,16 @@ class Cricbuzz():
 			return data
 		except Exception:
 			raise
+	def players(self,mid):
+		data = {}
+		try:
+			url =  "https://www.cricbuzz.com/match-api/"+mid+"/commentary.json"
+			players = self.crawl_url(url).get('players')
+			d = []
+			for c in players:
+				if "player" in c:
+					d.append({"id":c.get("id"),"f_name":c.get("f_name"),"name":c.get("name"),"bat_style":c.get("bat_style"),"bowl_style":c.get("bowl_style")})
+			data['players'] = d
+			return data
+		except Exception:
+			raise
