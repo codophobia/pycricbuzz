@@ -93,6 +93,9 @@ class Cricbuzz():
 		try:
 			comm = self.find_match(mid)
 
+                        if comm is None:
+                            return data
+
 			batting = comm.get('bat_team')
 			if batting is None:
 				return data
