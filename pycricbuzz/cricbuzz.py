@@ -53,7 +53,7 @@ class Cricbuzz():
 		t1_s_b = match.get('team1').get('squad_bench')
 		if t1_s_b is None:
 			t1_s_b = []
-		team1['squad_bench'] =  [ p_map[id] for id in t1_s_b]
+		team1['squad_bench'] =	[ p_map[id] for id in t1_s_b]
 		team2 = {}
 		team2['name'] = match.get('team2').get('name')
 		t2_s = match.get('team2').get('squad')
@@ -63,7 +63,7 @@ class Cricbuzz():
 		t2_s_b = match.get('team2').get('squad_bench')
 		if t2_s_b is None:
 			t2_s_b = []
-		team2['squad_bench'] =  [ p_map[id] for id in t2_s_b]
+		team2['squad_bench'] =	[ p_map[id] for id in t2_s_b]
 		d['team1'] = team1
 		d['team2'] = team2
 		return d
@@ -92,10 +92,8 @@ class Cricbuzz():
 		data = {}
 		try:
 			comm = self.find_match(mid)
-
-                        if comm is None:
-                            return data
-
+			if comm is None:
+				return data
 			batting = comm.get('bat_team')
 			if batting is None:
 				return data
