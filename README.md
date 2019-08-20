@@ -39,7 +39,7 @@ c = Cricbuzz()
 <b>Get all the matches(live,upcoming and recently finished matches)</b>
 
 ```python
-print c.matches()
+print(c.matches())
 ```
 
 Each match will have an attribute 'id'. Use this 'id' to get matchinfo, scorecard, brief score and commentary of matches.
@@ -47,24 +47,24 @@ Each match will have an attribute 'id'. Use this 'id' to get matchinfo, scorecar
 <b>Get information about a match</b>
 
 ```
-print c.matchinfo(match['id'])
+print(c.matchinfo(match['id']))
 ```
 
 <b>Get brief score of a match</b>
 
 ```python
-print c.livescore(match['id'])
+print(c.livescore(match['id']))
 ```
 
 <b>Get scorecard of a match</b>
 
 ```python
-print c.scorecard(match['id'])
+print(c.scorecard(match['id']))
 ```
 
 <b>Get commentary of a match</b>
 
 ```python
-print c.commentary(match['id'])
+print(c.commentary(match['id']))
 ```
 
